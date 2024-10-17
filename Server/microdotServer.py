@@ -5,6 +5,7 @@ import asyncio
 import network
 import secrets
 import time
+from machine import Pin, PWM
 
 # Connect to Wi-Fi
 wlan = network.WLAN(network.STA_IF)
@@ -31,28 +32,21 @@ app = Microdot()
 CORS(app, allowed_origins = '*', allow_credentials = True)
 
 @app.get('/')
+def index(requsst):
+    return "hello world"
+
+@app.get('/connect_websocket ')
 @with_websocket
-async def index(request, ws):
-    try: 
+async def index(request, ws): 
+    try:
         while True:
             data = await ws.receive()
             if not data:
                 break
-            print(data)
-            await ws.send('hello world')
-            
-    except OSError as msg:
-        print(msg)
-
-@app.get('/update_servo')
-@with_websocket
-async def index(request, ws):
-    while True:
-        data = await ws.receive()
-        if not data:
-            break
-        print(data)
-        await ws.send('good bye')
-
+            await ws.send('acknowledgment here')
+    except Exception as e:
+        print(f"WebSocket error: {e}")
+    finally:
+        print("WebSocket connection closed")
 
 app.run(port=80)
