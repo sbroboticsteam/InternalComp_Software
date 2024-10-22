@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     let animationFrameId = null;
 
     // Initialize WebSocket connection
-    //let socket = new WebSocket("ws://192.168.1.21:80");
+    let socket = new WebSocket("ws://192.168.1.21:80");
 
     socket.addEventListener("open", () => {
         socket.send("Hello Server!");
@@ -23,9 +23,9 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
         console.log("x:" + x + ", y:" + y);
         // Send coordinates via WebSocket
-        /*if (socket.readyState === WebSocket.OPEN) {
+        if (socket.readyState === WebSocket.OPEN) {
             socket.send(JSON.stringify({ x, y }));
-        }*/
+        }
     };
 
     const handleMovement = (clientX, clientY) => {
