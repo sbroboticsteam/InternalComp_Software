@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     let animationFrameId = null;
 
     // Initialize WebSocket connection
-    let socket = new WebSocket("ws://192.168.1.21:80");
+    //let socket = new WebSocket("ws://192.168.1.21:80");
 
     socket.addEventListener("open", () => {
         socket.send("Hello Server!");
@@ -21,10 +21,11 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         stick.style.top = `${y + radius}px`;
         stick.style.left = `${x + radius}px`;
 
+        console.log("x:" + x + ", y:" + y);
         // Send coordinates via WebSocket
-        if (socket.readyState === WebSocket.OPEN) {
+        /*if (socket.readyState === WebSocket.OPEN) {
             socket.send(JSON.stringify({ x, y }));
-        }
+        }*/
     };
 
     const handleMovement = (clientX, clientY) => {
@@ -48,12 +49,12 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         }
     };
 
-    // Start dragging on mousedown
+    // Enable dragging of joystick on touchdown/mousedown
     stick.addEventListener('mousedown', (e) => {
         dragging = true;
     });
 
-    // Stop dragging and reset position on mouseup
+    // Disable dragging and reset position of joystick on touchdown/mouseup
     document.addEventListener('mouseup', () => {
         if (dragging) {
             dragging = false;
@@ -61,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         }
     });
 
-    // Track movement while dragging
+    // Update position of joystick and send new movement to ESP32 on touchmove/mousemove
     document.addEventListener('mousemove', (e) => {
         if (dragging) {
             handleMovement(e.clientX, e.clientY);
