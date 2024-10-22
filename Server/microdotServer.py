@@ -31,11 +31,11 @@ else:
 app = Microdot()
 CORS(app, allowed_origins = '*', allow_credentials = True)
 
-@app.get('/')
+@app.get('/test')
 def index(requsst):
     return "hello world"
 
-@app.get('/connect_websocket ')
+@app.get('/direction')
 @with_websocket
 async def index(request, ws): 
     try:
