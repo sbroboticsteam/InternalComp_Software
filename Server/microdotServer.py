@@ -41,9 +41,7 @@ async def index(request, ws):
     try:
         while True:
             data = await ws.receive()
-            if not data:
-                break
-            await ws.send('acknowledgment here')
+            ## Insert your logic here
     except Exception as e:
         print(f"WebSocket error: {e}")
     finally:
