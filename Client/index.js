@@ -6,12 +6,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     let animationFrameId = null;
 
     // Initialize WebSocket connection
-    let socket = new WebSocket("ws://[ESP32's IP Address]:[Port #]/[Route]");
-
+    /*let socket = new WebSocket("ws://[ESP32's IP Address]:[Port #]/[Route]");
     socket.addEventListener("open", () => {
-        //initial connection message check
         socket.send("Hello Server!"); 
-    });
+    });*/
 
     const resetStickPosition = () => {
         stick.style.top = '75px';
@@ -22,10 +20,11 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         stick.style.top = `${y + radius}px`;
         stick.style.left = `${x + radius}px`;
 
+        console.log("x: " + x + ", y:" + y);
         // Send coordinates via WebSocket
-        if (socket.readyState === WebSocket.OPEN) {
+        /*if (socket.readyState === WebSocket.OPEN) {
             socket.send(JSON.stringify({ x, y }));
-        }
+        }*/
     };
 
     const handleMovement = (clientX, clientY) => {
