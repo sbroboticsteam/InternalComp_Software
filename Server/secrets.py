@@ -1,2 +1,2 @@
-SSID = 'SBRT'
-PASSWORD = 'Robotic$3'
+SSID = 'SSID'
+PASSWORD = 'PASSWORD'
