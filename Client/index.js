@@ -1,20 +1,20 @@
 document.addEventListener('DOMContentLoaded', async (event) => {
     const joystick = document.getElementsByClassName('joystick')[0];
     const stick = document.getElementsByClassName('stick')[0];
-    let radius = 75;
+    let radius = 100;
     let dragging = false;
     let animationFrameId = null;
 
     // Initialize WebSocket connection
-    let socket = new WebSocket("ws://192.168.1.21:80");
+    let socket = new WebSocket("ws://192.168.1.49:80/motion");
 
     socket.addEventListener("open", () => {
-        socket.send("Hello Server!");
+        //socket.send("Hello Server!");
     });
 
     const resetStickPosition = () => {
-        stick.style.top = '75px';
-        stick.style.left = '75px';
+        stick.style.top = '100px';
+        stick.style.left = '100px';
     };
 
     const moveStick = (x, y) => {
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
         // Send coordinates via WebSocket
         if (socket.readyState === WebSocket.OPEN) {
-            socket.send(JSON.stringify({ x, y }));
+            socket.send([x, -y]);
         }
     };
 
@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         if (dragging) {
             dragging = false;
             resetStickPosition();
+            moveStick(0,0)
         }
     });
 
