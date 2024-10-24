@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
     const handleMovement = (clientX, clientY) => {
         const rect = joystick.getBoundingClientRect();
-        let x = clientX - rect.left - 100; // Offset to center (range: -75 to 75)
+        let x = clientX - rect.left - 100; // Offset to center (range: -100 to 100)
         let y = clientY - rect.top - 100;
 
         // Constrain values between -75 and 75
