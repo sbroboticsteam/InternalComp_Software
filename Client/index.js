@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         stick.style.top = `${y + radius}px`;
         stick.style.left = `${x + radius}px`;
 
+        console.log("x:" + x + ", y:" + y);
         // Send coordinates via WebSocket
         if (socket.readyState === WebSocket.OPEN) {
             socket.send([x, -y]);
@@ -48,12 +49,12 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         }
     };
 
-    // Start dragging on mousedown
+    // Enable dragging of joystick on touchdown/mousedown
     stick.addEventListener('mousedown', (e) => {
         dragging = true;
     });
 
-    // Stop dragging and reset position on mouseup
+    // Disable dragging and reset position of joystick on touchdown/mouseup
     document.addEventListener('mouseup', () => {
         if (dragging) {
             dragging = false;
@@ -62,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         }
     });
 
-    // Track movement while dragging
+    // Update position of joystick and send new movement to ESP32 on touchmove/mousemove
     document.addEventListener('mousemove', (e) => {
         if (dragging) {
             handleMovement(e.clientX, e.clientY);
