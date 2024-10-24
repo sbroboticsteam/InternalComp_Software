@@ -1,11 +1,17 @@
 from microdot import Microdot
 from microdot.websocket import with_websocket
 from microdot.cors import CORS
+from machine import Pin, PWM
 import asyncio 
 import network
 import secrets
 import time
-from machine import Pin, PWM
+
+# Initialize PWM and direction pins
+PWM1 = PWM(Pin(3, Pin.OUT), freq=1000)
+PWM2 = PWM(Pin(19, Pin.OUT), freq=1000)
+left_wheel_pin1, left_wheel_pin2 = Pin(0, Pin.OUT), Pin(10, Pin.OUT)
+right_wheel_pin1, right_wheel_pin2 = Pin(20, Pin.OUT), Pin(21, Pin.OUT)
 
 # Connect to Wi-Fi
 wlan = network.WLAN(network.STA_IF)
