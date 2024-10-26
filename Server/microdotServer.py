@@ -1,3 +1,6 @@
+from microdot import Microdot
+from microdot.websocket import with_websocket
+from microdot.cors import CORS
 from machine import Pin, PWM
 import asyncio 
 import network
