@@ -67,7 +67,6 @@ async def index(request, ws):
 @app.get('/motion')
 @with_websocket
 async def index(request, ws):
-    print("Should not be here")
     # Helper function to set motor direction
     def set_wheel_direction(wheel1_dir, wheel2_dir):
         motor2_in1.value(wheel1_dir[0]), motor2_in2.value(wheel1_dir[1])
