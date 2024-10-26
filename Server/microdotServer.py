@@ -1,23 +1,12 @@
-from microdot import Microdot
-from microdot.websocket import with_websocket
-from microdot.cors import CORS
 from machine import Pin, PWM
 import asyncio 
 import network
-import secrets
 import time
-
-# Initialize PWM and direction pins
-ONE_PWM = PWM(Pin(4, Pin.OUT), freq=1000)
-TWO_PWM = PWM(Pin(19, Pin.OUT), freq=1000)
-
-One_Wheel1, One_Wheel2 = Pin(0, Pin.OUT), Pin(10, Pin.OUT)
-Two_Wheel1, Two_Wheel2 = Pin(20, Pin.OUT), Pin(21, Pin.OUT)
 
 # Connect to Wi-Fi
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
-wlan.connect(secrets.SSID, secrets.PASSWORD)
+wlan.connect('WIFI_NAME', 'PASSWORD')
 time.sleep(5)
 
 # Wait for connection
@@ -25,15 +14,31 @@ max_attempts = 10
 attempt = 0
 
 while not wlan.isconnected() and attempt < max_attempts:
-    print(f"Trying to connect to secrets.SSID (Attempt {attempt + 1}/{max_attempts})...")
+    print(f"Trying to connect (Attempt {attempt + 1}/{max_attempts})...")
     time.sleep(10)
     attempt += 1
 
+# Connection is successful when LED blinks on the Pi
 if wlan.isconnected():
     print("Connected to IP:", wlan.ifconfig()[0])
+    led = Pin("LED", Pin.OUT)
+    for i in range(5):
+        print(i)
+        led.on()
+        time.sleep(1)
+        led.off()
+        time.sleep(1)
 else:
     print("Failed to connect to Wi-Fi. Please check your SSID and password.")
+    
+# Initialize PWM and direction pins 
+motor2_PWM = PWM(Pin(11, Pin.OUT), freq=1000)
+motor2_in1= Pin(5, Pin.OUT)
+motor2_in2 = Pin(9, Pin.OUT)
 
+motor4_PWM = PWM(Pin(19, Pin.OUT), freq=1000)
+motor4_in1 = Pin(20, Pin.OUT)
+motor4_in2 = Pin(21, Pin.OUT)
 
 app = Microdot()
 CORS(app, allowed_origins = '*', allow_credentials = True)
@@ -59,16 +64,17 @@ async def index(request, ws):
 @app.get('/motion')
 @with_websocket
 async def index(request, ws):
+    print("Should not be here")
     # Helper function to set motor direction
     def set_wheel_direction(wheel1_dir, wheel2_dir):
-        One_Wheel1.value(wheel1_dir[0]), One_Wheel2.value(wheel1_dir[1])
-        Two_Wheel1.value(wheel2_dir[0]), Two_Wheel2.value(wheel2_dir[1])
+        motor2_in1.value(wheel1_dir[0]), motor2_in2.value(wheel1_dir[1])
+        motor4_in1.value(wheel2_dir[0]), motor4_in2.value(wheel2_dir[1])
 
     # Function to control wheel speed using PWM
     def motion(wheel1, wheel2):
         print(f"Wheel1: {wheel1}, Wheel2: {wheel2}")
-        ONE_PWM.duty_u16(int(wheel1 / 100 * 65535))
-        TWO_PWM.duty_u16(int(wheel2 / 100 * 65535))
+        motor2_PWM.duty_u16(int(wheel1 / 100 * 65535))
+        motor4_PWM.duty_u16(int(wheel2 / 100 * 65535))
 
     # Main movement function
     def move(x, y):
@@ -94,7 +100,8 @@ async def index(request, ws):
             print("forward and turn left")
             set_wheel_direction((0, 1), (0, 1))  # Both wheels forward
             motion(abs(abs_y - abs_x), abs_y)
-
+            
+    set_wheel_direction((0, 0), (0, 0))
     while True:
         data = await ws.receive()
         if not data:
@@ -106,6 +113,3 @@ async def index(request, ws):
         
         await ws.send('good bye')
 app.run(port=80)
-
-
-
