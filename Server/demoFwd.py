@@ -92,8 +92,8 @@ async def index(request, ws):
             print(x,y)
             
             # Normalize controller values
-            x = x/75
-            y = y/75
+            x = x/175
+            y = y/175
             
             # Calculate motor powers, component-wise
             fLeft = y - x
