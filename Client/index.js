@@ -34,8 +34,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         console.log("x: " + x + ", y:" + y);
         // Send coordinates via WebSocket
         if (socket.readyState === WebSocket.OPEN) {
-            socket.send(x)
-            socket.send(y)
+            socket.send([x, -y])
         }
     };
 
