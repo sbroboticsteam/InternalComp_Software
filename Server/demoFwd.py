@@ -67,8 +67,15 @@ def index(requsst):
 
 # Custom function to set motor power
 def setMotorPower(power, PWM, in1, in2):
-    PWM.duty_u16(int(abs(power)*65535))
     
+    # In cases of power being more than max
+    if power > 1:
+        power = 1
+    elif power < -1:
+        power = -1
+
+    
+    PWM.duty_u16(int(abs(power)*65535))
     # Changing motor direction, based on sign
     if power > 0:
         in1.value(1)
@@ -87,19 +94,25 @@ async def index(request, ws):
         while True:
             # Access controller values
             x = int(round(float(await ws.receive())))
-            y = int(round(float(await ws.receive())))
+            y = -int(round(float(await ws.receive())))
             
             print(x,y)
             
             # Normalize controller values
-            x = x/175
-            y = y/175
+            x = x/100
+            y = y/100
             
             # Calculate motor powers, component-wise
-            fLeft = y - x
-            fRight = y + x
-            bLeft = y - x
-            bRight = y + x
+            if y > 0:
+                fLeft = (y + x)
+                fRight = (y - x)
+                bLeft = (y + x)
+                bRight = (y - x)
+            else:
+                fLeft = (y - x)
+                fRight = (y + x)
+                bLeft = (y - x)
+                bRight = (y + x)
             
             print("Motor Powers")
             print(fLeft)
