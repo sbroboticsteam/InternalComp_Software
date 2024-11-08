@@ -4,13 +4,13 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
     let joystickRadius = parseInt(window.getComputedStyle(joystick).width)/2;
     let stickRadius = parseInt(window.getComputedStyle(stick).width)/2;
-    let radius = joystickRadius - stickRadius; // 100 - 25
+    let radius = joystickRadius - stickRadius;
     console.log("radius:" + radius);
     let dragging = false;
     let animationFrameId = null;
 
     // Initialize WebSocket connection
-    let socket = new WebSocket("ws://192.168.0.209/direction");
+    let socket = new WebSocket("ws://[RASPBEERY IP]]/direction");
     /*
     socket.addEventListener("open", () => {
         socket.send("Hello Server!"); 
@@ -34,7 +34,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         console.log("x: " + x + ", y:" + y);
         // Send coordinates via WebSocket
         if (socket.readyState === WebSocket.OPEN) {
-            socket.send([x, -y])
+            socket.send(x)
+            socket.send(y)
         }
     };
 
@@ -43,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         let x = clientX - rect.left - joystickRadius; // Offset to center (range: -75 to 75)
         let y = clientY - rect.top - joystickRadius;
 
-        console.log("rect top" + rect.top + " rect left" + rect.left + " rect right" + rect.right)
+        //console.log("rect top" + rect.top + " rect left" + rect.left + " rect right" + rect.right)
 
         // Constrain values between -75 and 75
         x = Math.max(-radius, Math.min(x, radius));
@@ -65,8 +66,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         }
     };
     
-    // // What should the joystick do?
-    // // 1. Enable dragging of joystick when mousedown/touchdown
+    // What should the joystick do?
+    // 1. Enable dragging of joystick when mousedown/touchdown
     stick.addEventListener('mousedown', (e)=>{
          dragging = true;
      })
@@ -84,7 +85,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
              handleMovement(e.clientX, e.clientY);
          }
      })
-
+    
+     // 1. Enable dragging of joystick when mousedown/touchdown
     stick.addEventListener('touchstart', (e)=>{
         dragging = true;
     })
@@ -103,8 +105,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             handleMovement(e.touches[0].clientX, e.touches[0].clientY);
         }
     }, { passive:false })
-    // python -m http.server 8000
-    // in cmd do ipconfig to get IPv4
-    // http//[IPv4 Address]:8000
     resetStickPosition();
 });
+
+// Set up Server
+// python -m http.server 8000
+// in cmd do ipconfig to get IPv4
+// http//[IPv4 Address]:8000
